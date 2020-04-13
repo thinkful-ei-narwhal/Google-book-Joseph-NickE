@@ -12,6 +12,15 @@ export default class App extends React.Component {
         search: '',
         printTypeChanged: '',
         bookTypeChanged: ''
+      },
+      bookList: {
+        book1: {
+          title: '',
+          authors: [],
+          price: '',
+          image: '',
+          description: '',
+        }
       }
     }
   }
@@ -60,7 +69,21 @@ export default class App extends React.Component {
           throw new Error('Something went wrong, please try again later');
         } return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => data.items)
+      .then(books => { 
+        let final = books.map(book => {
+          let title = book.volumeInfo.title;
+          let authors = book.volumeInfo.authors;
+          let price = book.saleInfo.retailPrice;
+          let image = book.volumeInfo.imageLinks.thumbnail;
+          let description = book.volumeInfo.description;
+          console.log(price)
+          // return {title, authors, price, image, description}
+        })
+      this.setState({
+        bookList: final
+      })
+    })
   }
 
   render() {
