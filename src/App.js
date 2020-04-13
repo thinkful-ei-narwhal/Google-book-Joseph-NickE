@@ -62,7 +62,7 @@ export default class App extends React.Component {
           let id = book.id;
           let title = book.volumeInfo.title;
           let authors = book.volumeInfo.authors;
-          let price = book.saleInfo.saleability.includes('NOT_FOR_SALE') ? '0' : book.saleInfo.retailPrice.amount;
+          let price = book.saleInfo.saleability.includes('NOT_FOR_SALE') ? '$0' : `$${book.saleInfo.retailPrice.amount}`;
           let image = book.volumeInfo.imageLinks.thumbnail;
           let description = book.volumeInfo.description;
           return { id, title, authors, price, image, description };

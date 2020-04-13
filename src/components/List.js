@@ -15,8 +15,8 @@ export default class List extends React.Component {
     });
 
     return (
-      <div>
-        <p>List</p>
+      <div className="list">
+        <h2>List of Books</h2>
         {bookItems}
       </div>
     );
