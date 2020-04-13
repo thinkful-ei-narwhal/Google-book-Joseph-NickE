@@ -7,16 +7,23 @@ import List from './components/List'
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      test: test
-    }
+    this.state = {}
+  }
+
+  fetchSearch = (query, print, book) => {
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}?printType=${print}?filter=${book}`)
+    .then(res => { 
+      if(!res.ok) { throw new Error('Something went wrong, please try again later'); 
+      } return res.json(); 
+    })
+    .then(data => console.log(data))
   }
 
   render() {
     return (
       <div className="App" >
         <Header />
-        <Search />
+        <Search fetchSearch={this.fetchSearch}/>
         <List />
       </div>
     );
