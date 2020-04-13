@@ -6,12 +6,12 @@ export default class Search extends React.Component {
     return (
       <form onSubmit={(e) => this.props.fetchSearch(e)}>
         <label htmlFor="search">Search: </label>
-        <input type="text" id="search" placeholder="book title" name="search" onChange={e => this.props.searchChanged(e)} />
+        <input type="text" id="search" required placeholder="book title" name="search" onChange={e => this.props.searchChanged(e)} />
 
-        <label htmlFor="print-type">Print Type: </label>
+        <label htmlFor="print-type" >Print Type: </label>
         <select id="print-type" name="print-type" onChange={e => this.props.printTypeChanged(e)} >
           <option value="all">All</option>
-          <option value="books">Books</option>
+          <option value="books" >Books</option>
           <option value="magazines">Magazines</option>
         </select>
 

@@ -8,82 +8,68 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: {
-        search: '',
-        printTypeChanged: '',
-        bookTypeChanged: ''
-      },
-      bookList: {
-        book1: {
-          title: '',
-          authors: [],
-          price: '',
-          image: '',
-          description: '',
-        }
-      }
+      search: '',
+      printType: 'all',
+      bookType: 'eBooks',
+      bookList: []
     }
   }
 
   searchChanged = (e) => {
     this.setState({
-      formData: {
-        search: e.target.value,
-        printType: this.state.formData.printType,
-        bookType: this.state.formData.bookType,
-      }
+      search: e.target.value,
+      printType: this.state.printType,
+      bookType: this.state.bookType
     });
   }
 
   printTypeChanged = (e) => {
     this.setState({
-      formData: {
-        search: this.state.formData.search,
-        printType: e.target.value,
-        bookType: this.state.formData.bookType,
-      }
+      search: this.state.search,
+      printType: e.target.value,
+      bookType: this.state.bookType,
     });
   }
 
   bookTypeChanged = (e) => {
     this.setState({
-      formData: {
-        search: this.state.formData.search,
-        printType: this.state.formData.printType,
-        bookType: e.target.value
-      }
+      search: this.state.search,
+      printType: this.state.printType,
+      bookType: e.target.value
     });
   }
 
 
   fetchSearch = (e) => {
     e.preventDefault();
-    // query, print, book
-    const query = this.state.formData.search;
-    const print = this.state.formData.printType;
-    const book = this.state.formData.bookType;
+    const query = this.state.search;
+    const print = this.state.printType;
+    const book = this.state.bookType;
 
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}?printType=${print}?filter=${book}`)
+    e.target.search.value = '';
+    console.log(query);
+
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&printType=${print}&filter=${book}`)
       .then(res => {
         if (!res.ok) {
-          throw new Error('Something went wrong, please try again later');
-        } return res.json();
+          return Error('Something went wrong, please try again later');
+        }
+        return res.json();
       })
       .then(data => data.items)
-      .then(books => { 
-        let final = books.map(book => {
+      .then(books =>
+        books.map(book => {
+          let id = book.id;
           let title = book.volumeInfo.title;
           let authors = book.volumeInfo.authors;
-          let price = book.saleInfo.retailPrice;
+          let price = book.saleInfo.saleability.includes('NOT_FOR_SALE') ? '0' : book.saleInfo.retailPrice.amount;
           let image = book.volumeInfo.imageLinks.thumbnail;
           let description = book.volumeInfo.description;
-          console.log(price)
-          // return {title, authors, price, image, description}
+          return { id, title, authors, price, image, description };
         })
-      this.setState({
-        bookList: final
-      })
-    })
+      )
+      .then(bookList => this.setState({ bookList: bookList }))
+      .catch(err => console.log(err.message));
   }
 
   render() {
@@ -91,7 +77,7 @@ export default class App extends React.Component {
       <div className="App" >
         <Header />
         <Search fetchSearch={this.fetchSearch} searchChanged={this.searchChanged} printTypeChanged={this.printTypeChanged} bookTypeChanged={this.bookTypeChanged} />
-        <List />
+        <List list={this.state.bookList} />
       </div>
     );
   }
